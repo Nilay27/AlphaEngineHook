@@ -25,7 +25,7 @@ alphaEngineHook/
 │   ├── test/                 # Test suite
 │   └── privateSwap/          # AVS integration specs
 │
-├── hello-world-avs/          # EigenLayer AVS for decryption
+├── swap-manager-avs/          # EigenLayer AVS for decryption
 │   ├── contracts/            # AVS contracts
 │   ├── operator/             # Operator implementation
 │   └── challenger/           # Slashing mechanism
@@ -52,7 +52,7 @@ cd alphaEngineHook
 
 # Install dependencies for both projects
 cd universal-privacy-hook && pnpm install && cd ..
-cd hello-world-avs && npm install && cd ..
+cd swap-manager-avs && npm install && cd ..
 ```
 
 2. **Start Local Blockchain**
@@ -64,9 +64,9 @@ anvil
 3. **Deploy Contracts**
 ```bash
 # Terminal 2: Deploy EigenLayer & AVS
-cd hello-world-avs
+cd swap-manager-avs
 npm run deploy:core
-npm run deploy:hello-world
+npm run deploy:swap-manager
 
 # Deploy Privacy Hook
 cd ../universal-privacy-hook
@@ -76,7 +76,7 @@ forge script script/Anvil.s.sol --rpc-url http://localhost:8545 --broadcast
 4. **Start AVS Operator**
 ```bash
 # Terminal 3: Start operator for FHE decryption
-cd hello-world-avs
+cd swap-manager-avs
 npm run start:operator
 ```
 
@@ -124,7 +124,7 @@ The EigenLayer AVS provides decentralized FHE decryption:
 3. Execute swaps on Uniswap V4
 4. Submit execution proofs to avoid slashing
 
-[Full AVS Documentation →](./hello-world-avs/README.md)
+[Full AVS Documentation →](./swap-manager-avs/README.md)
 
 ## 🧪 Testing
 
@@ -141,7 +141,7 @@ forge test -vvv
 
 ### AVS Tests
 ```bash
-cd hello-world-avs
+cd swap-manager-avs
 cargo test --workspace
 
 # Integration test
