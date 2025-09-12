@@ -1,6 +1,6 @@
 # Development Log - AVS and Contracts
 
-## September 10, 2025 (Yesterday - Committed Changes)
+## September 10, 2025
 
 ### Major Accomplishments from Main Branch to Current Branch (feat/avs-swap-matching)
 
@@ -44,7 +44,7 @@
 
 ---
 
-## September 11, 2025 (Today - Committed)
+## September 11, 2025
 
 ### Major Accomplishments
 
@@ -174,34 +174,139 @@ Swap Execution
 6. Sign and submit responses
 7. Receive rewards for honest behavior
 
----
 
-## Testing Instructions
+## September 12, 2025
 
-### Local Setup:
+### Critical Fixes for Real FHE Encryption/Decryption
+
+#### 1. Fixed ctHash Extraction from Encrypted Data
+
+**Problem:** The encryption was returning an object with multiple fields (ctHash, securityZone, utype, signature), but the code was trying to encode the entire object instead of just the ctHash.
+
+**Solution:** Extract only the ctHash from the encrypted handle before encoding:
+```typescript
+// operator/createEncryptedSwapTasks.ts
+const encryptedHandle = encResult.data[0];
+const ctHash = encryptedHandle.ctHash;  // Extract just the ctHash
+return ethers.AbiCoder.defaultAbiCoder().encode(["uint256"], [ctHash]);
+```
+
+#### 2. Fixed Bytes Data Decoding in Operator
+
+**Problem:** When decrypting, the operator was reading the offset (0x20) instead of the actual ctHash value from the bytes data.
+
+**Solution:** Skip the first 66 characters (0x + 32 bytes offset) to get the actual ctHash:
+```typescript
+// operator/cofheUtils.ts
+if (encryptedAmount.length > 66) {
+    const ctHashHex = '0x' + encryptedAmount.slice(66);
+    encryptedHandle = BigInt(ctHashHex);
+}
+```
+
+#### 3. Implemented CoFHE Mock Contracts Integration
+
+**New Files Added:**
+- `contracts/script/DeployCoFHEMocks.s.sol`: Deploys mock FHE contracts
+- `scripts/setup-cofhe-anvil.js`: Sets up CoFHE contracts at required addresses
+- `operator/cofheConfig.ts`: Configuration for CoFHE.js
+
+**Key Features:**
+- Real FHE encryption using CoFHE.js library
+- Storage-based decryption from MockCoFHE contract
+- TaskManager must be at address `0xeA30c4B8b44078Bbf8a6ef5b9f1eC1626C7848D9` (CoFHE.js requirement)
+
+#### 4. Removed All Hardcoded Addresses
+
+**Problem:** Scripts had fallback hardcoded addresses which could cause issues.
+
+**Solution:** All addresses now read from deployment files, script exits if deployment files not found:
+```javascript
+// scripts/setup-cofhe-anvil.js
+try {
+    const deployment = JSON.parse(fs.readFileSync(deploymentFile, 'utf8'));
+    // Use deployment addresses
+} catch (e) {
+    console.error('ERROR: CoFHE mock contracts deployment file not found!');
+    process.exit(1);
+}
+```
+
+#### 5. Fixed Transaction Nonce Issues
+
+**Problem:** Ethers.js gas estimation was causing "nonce too low" errors.
+
+**Solution:** Add explicit transaction parameters:
+```typescript
+const nonce = await wallet.getNonce();
+const feeData = await provider.getFeeData();
+const tx = await mockHook.submitEncryptedIntent(
+    intent.tokenIn,
+    intent.tokenOut,
+    encryptedAmount,
+    { nonce: nonce, gasLimit: 500000, gasPrice: feeData.gasPrice }
+);
+```
+
+#### 6. Added Batch Processing Support
+
+**Implementation:** Batch encryption/decryption for multiple orders without storage conflicts:
+```typescript
+// Each ctHash gets unique storage slot
+const storageSlot = ethers.keccak256(
+    ethers.AbiCoder.defaultAbiCoder().encode(
+        ["uint256", "uint256"],
+        [encryptedHandle, MAPPING_SLOT]
+    )
+);
+```
+
+### Complete Working Flow
+
+The system now supports real FHE encryption/decryption:
+
+1. **Traffic Generator** encrypts amounts using CoFHE.js → extracts ctHash → sends to MockPrivacyHook
+2. **SwapManager** creates tasks with encrypted amounts → selects operators
+3. **Operators** receive tasks → extract ctHash from bytes → read decrypted value from storage → respond
+
+### Simplified Deployment Process
+
+The deployment is now streamlined to just 3 steps:
+
 ```bash
-# Terminal 1: Start Anvil
-anvil
+# Step 1: Deploy everything (includes CoFHE setup)
+npm run deploy:all
 
-# Terminal 2: Deploy contracts
-npm run deploy:core
-npm run deploy:swap-manager  
-npm run deploy:mock-hook
-
-# Terminal 3: Start operator
+# Step 2: Start operator
 npm run start:operator
 
-# Terminal 4: Generate traffic
+# Step 3: Generate traffic
 npm run start:traffic
 ```
 
-### Expected Output:
-- Operator registers successfully
-- Traffic generator creates encrypted intents
-- Operator receives tasks and attempts to decrypt
-- Responses submitted (pending signature fix)
+The `deploy:all` script automatically:
+- Deploys EigenLayer core contracts
+- Deploys SwapManager AVS
+- Deploys MockPrivacyHook
+- Deploys CoFHE mock contracts
+- Sets up CoFHE contracts at required addresses
+
+### Testing Results
+
+Successfully tested end-to-end flow:
+- ✅ Real FHE encryption using CoFHE.js
+- ✅ Correct ctHash extraction and encoding
+- ✅ Storage-based value retrieval
+- ✅ Operator decryption working
+- ✅ Task creation and response flow
+
+Example successful decryption:
+```
+Extracting ctHash from bytes: 0x0000000000000000000000000000000000000000000000000000000000000020...
+Decrypting FHE handle (ctHash): 53734413601763082004684946258124079617387236355262206024543905704868167026176
+Found decrypted value at slot 1: 1000000000
+```
 
 ---
 
-*Last Updated: September 11, 2025*
-*Next Session: Fix signature verification and complete end-to-end testing*
+*Last Updated: September 12, 2025*
