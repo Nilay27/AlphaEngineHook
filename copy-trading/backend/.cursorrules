@@ -1,0 +1,216 @@
+Project Instructions FOR LEARNLEDGER AND NOT COPYTRADING
+
+Use this specification and these guidelines as you build the **LearnLedger** MVP.
+
+Use specification and guidelines as you build the app. Write the complete code for every step. Do not get lazy.Your goal is to **completely finish** whatever is asked.  
+When adding or modifying code, **show the complete code**—don’t just outline or pseudo-code.  
+
+You will see references to tags and folder structure. These are context tags that help you maintain a consistent codebase organization.
+
+## Overview
+
+This is a **web app template** for **LearnLedger**.  
+Tech stack for the MVP:  
+
+- **Frontend**: Next.js, Tailwind, Shadcn, Framer Motion  
+- **Backend**: Postgres (or minimal DB approach), direct queries or Drizzle (optional)  
+- **Auth**: **Metamask** (replace Clerk references)  
+- **Deployment**: Vercel (or simple hosting)  
+
+We’re using a minimal approach to keep things flexible as we grow.
+
+## Project Structure
+
+Continue to use or adapt the following structure for your Next.js application:
+
+- `actions` - **Server actions** (for DB writes, token updates, etc.)
+    - `db` - Database-related actions (e.g., project creation, user balance updates)
+    - Other actions
+- `app` - **Next.js app router**
+    - `api` - API routes (if needed)
+    - `projects` - For project-related routes/pages
+        - `_components` - One-off components for the /projects route
+        - `layout.tsx` - Layout for /projects
+        - `page.tsx` - Main page for /projects
+    - `courses` - For course-related routes/pages
+        - `_components` - Components for /courses
+        - `layout.tsx`  
+        - `page.tsx`
+    - (Add more routes, e.g. `/skills`, as needed)
+- `components` - **Shared components**
+    - `ui` - UI components  
+    - `utilities` - Utility components
+- `db` - **Database** (optional if you prefer direct queries in server actions)
+    - `schema` - Database schemas (e.g., projects-schema.ts, courses-schema.ts)
+- `lib` - **Library code**
+    - `hooks` - Custom React hooks
+- `prompts` - Prompt files (if any)
+- `public` - Static assets
+- `types` - **Type definitions** (MVP or domain-specific)
+
+Feel free to expand or reduce this structure based on your actual needs.
+
+---
+
+## Rules
+
+### General Rules
+
+- Use `@` to import anything from the app unless otherwise specified (e.g., `import { someAction } from "@/actions/db"`)
+- Use **kebab-case** for filenames and folders, except for special cases where Next.js enforces a convention (e.g., `page.tsx`, `layout.tsx`).
+- **Do not** modify Shadcn UI components unless explicitly stated.
+- If environment variables are used, place them in `.env.local` and update `.env.example` accordingly.
+    - For variables accessed on the client, use `NEXT_PUBLIC_` prefix.
+- Keep references to future features (like advanced bidding) minimal but add placeholders if needed.
+
+---
+
+### Database Rules
+
+We’re using **Postgres** in the simplest form. You can integrate Drizzle or just direct SQL queries—whichever is easiest for the MVP. If you do use Drizzle:
+
+- Place schema files in `db/schema`, named in **kebab-case** (e.g., `projects-schema.ts`).
+- Export each schema in `db/schema/index.ts`.
+- If you do have a `db/db.ts`, add your schemas to the `schema` object.
+- **No migrations** are needed for the MVP (ignore `db/migrations`).
+
+**Primary Entities (Minimum)**:
+
+1. **projects**  
+    - `projectName`, `projectLink`, `projectDescription`, `prizeAmount`, `projectStatus`, `projectOwner`, `requiredSkills`, `assignedFreelancer`
+2. **userBalances** (optional if you want to track tokens off-chain)  
+    - `userId`, `balance`
+3. **skills**  
+    - `skillName`, `skillDescription`
+4. **courses**  
+    - `courseName`, `courseDescription`, `courseFee`
+
+Use **camelCase** for columns or **snake_case** if you prefer. Keep it consistent.  
+**Example**:
+
+```ts
+import { pgTable, text, numeric, uuid, timestamp } from "drizzle-orm/pg-core"
+
+export const projectsTable = pgTable("projects", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  projectName: text("project_name").notNull(),
+  projectLink: text("project_link"),
+  projectDescription: text("project_description"),
+  prizeAmount: numeric("prize_amount"),
+  projectStatus: text("project_status").default("open").notNull(),
+  projectOwner: text("project_owner").notNull(), // metamask wallet address?
+  requiredSkills: text("required_skills"),
+  assignedFreelancer: text("assigned_freelancer"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+    .$onUpdate(() => new Date())
+})
+```
+
+---
+
+### Actions Rules
+
+- Store **server actions** in `actions/` or `actions/db` if they involve DB queries.
+- Name files in **kebab-case** (e.g., `projects-actions.ts`).
+- End function names with `Action` (e.g., `createProjectAction`).
+- Return an **ActionState** object that indicates success/failure if you want typed responses.
+
+**Example**:
+
+```ts
+"use server"
+
+import { db } from "@/db/db"
+import { projectsTable } from "@/db/schema"
+import { eq } from "drizzle-orm"
+
+export async function createProjectAction(data: {
+  projectName: string
+  projectDescription?: string
+  // etc.
+}) {
+  try {
+    const [newProject] = await db
+      .insert(projectsTable)
+      .values(data)
+      .returning()
+    return { isSuccess: true, message: "Project created", data: newProject }
+  } catch (error) {
+    console.error("Error creating project:", error)
+    return { isSuccess: false, message: "Failed to create project" }
+  }
+}
+```
+
+---
+
+### Auth Rules
+
+- **Replace Clerk** with **Metamask** login.  
+- For server-side pages or actions, you can pass the user’s wallet address as a parameter or embed it in the session data.  
+- If you need to verify a user’s identity via Metamask signature, you can do so client-side and pass a verified token to the server actions. 
+- For the MVP, it’s enough to store the wallet address in the `projectOwner` or `assignedFreelancer` fields.
+
+**No references to Clerk** or other service-based authentication.  
+
+---
+
+### Frontend Rules
+
+You’re using Next.js, Tailwind, Shadcn, and Framer Motion.  
+
+**General**:  
+
+- Use `lucide-react` for icons.  
+- Keep components minimal and clean.  
+- Use **div** unless there’s a strong reason for another HTML element.  
+- Separate main parts of a component’s HTML with an extra blank line for readability.  
+
+**Organization**:  
+
+- Name component files in **kebab-case** (`example-component.tsx`).  
+- Shared components go in `/components`; route-specific components go in `app/<route>/_components`.  
+- Maintain a minimal approach: you don’t have to create an entire subfolder structure if a single file suffices.
+
+**Data Fetching**:  
+
+- **Fetch data in server components** (e.g., `layout.tsx`, `page.tsx`) and pass down as props to client components.  
+- **Use server actions** in `/actions` for DB mutations.  
+
+**Server Components**:  
+
+- Mark them with `"use server"` at the top.  
+- If you need to do asynchronous fetching, wrap the slow part in a `<Suspense>` boundary.  
+
+**Client Components**:  
+
+- Mark them with `"use client"`.  
+- They handle user interaction, local state, or Metamask calls.  
+- No direct server actions in client components; use an imported server action or route for that.
+
+---
+
+### Payments Rules
+
+- **Stripe is not used** in this dApp.  
+- **On-chain** payments are a future feature.  
+- For now, no references to fiat transactions or payment providers are needed.  
+
+---
+
+### Storage Rules
+
+- **No file storage** in this MVP (no Supabase Storage usage).  
+- You can safely ignore the entire storage section from the original rules.  
+
+---
+
+### Security & Future Expansion
+
+- Keep it simple, but you can add placeholders for future bidding, rating systems, or skill verification.  
+- Potential **enums** can be introduced later (e.g., `project_status` with values [“open”, “closed”, “in-progress”]).  
+- For **token balances**, you may have a `userBalances` table or store it in the user’s row. Decide which is simplest for the MVP.  
+
+
+

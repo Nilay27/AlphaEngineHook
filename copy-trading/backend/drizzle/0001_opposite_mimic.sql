@@ -1,0 +1,1 @@
+ALTER TABLE "projects" ALTER COLUMN "prize_amount" SET DEFAULT '0';

@@ -1,0 +1,1 @@
+ALTER TABLE "project_submissions" ADD COLUMN "blockchain_tx_hash" text;

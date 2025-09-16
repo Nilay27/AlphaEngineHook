@@ -1,0 +1,7 @@
+# macOS
+.DS_Store
+
+# Nested git repositories are now managed as submodules
+
+# Node modules
+node_modules/

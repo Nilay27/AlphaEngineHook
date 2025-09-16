@@ -1,0 +1,17 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "@next/next/no-html-link-for-pages": "off",
+    "react/no-unescaped-entities": "off",
+    "import/order": ["error", {
+      "groups": ["builtin", "external", "internal"],
+      "pathGroups": [
+        { "pattern": "react", "group": "external", "position": "before" }
+      ],
+      "pathGroupsExcludedImportTypes": ["react"],
+      "newlines-between": "always",
+      "alphabetize": { "order": "asc", "caseInsensitive": true }
+    }]
+  },
+  "ignorePatterns": ["*.css", "*.ico", "*.svg", "*.png", "*.jpg", "*.jpeg", "*.gif", "public/*"]
+}

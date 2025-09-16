@@ -1,0 +1,2091 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "LearnLedger API",
+        "description": "API documentation for the LearnLedger platform. This API enables interaction with projects, users, submissions, and other resources in the LearnLedger ecosystem.",
+        "version": "1.0.0",
+        "contact": {
+            "name": "LearnLedger Support",
+            "email": "support@LearnLedger.com"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://LearnLedger.vercel.app/api",
+            "description": "Production server"
+        },
+        {
+            "url": "http://localhost:3000/api",
+            "description": "Local development server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Register",
+            "description": "User registration operations"
+        },
+        {
+            "name": "User Profile",
+            "description": "User profile management operations"
+        },
+        {
+            "name": "Projects",
+            "description": "Project management operations"
+        },
+        {
+            "name": "Project Status",
+            "description": "Project status update operations"
+        },
+        {
+            "name": "Project Assignment",
+            "description": "Project assignment operations"
+        },
+        {
+            "name": "Submissions",
+            "description": "Project submission operations"
+        },
+        {
+            "name": "Company",
+            "description": "Company-related operations"
+        },
+        {
+            "name": "Freelancer",
+            "description": "Freelancer-related operations"
+        },
+        {
+            "name": "GitHub",
+            "description": "GitHub integration operations"
+        },
+        {
+            "name": "Documentation",
+            "description": "API documentation and specification"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "isSuccess": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Error message"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "example": {
+                            "fieldName": [
+                                "Error message for this field"
+                            ]
+                        }
+                    }
+                }
+            },
+            "SuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "isSuccess": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Operation completed successfully"
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
+                    }
+                }
+            },
+            "WalletAddress": {
+                "type": "string",
+                "pattern": "^0x[a-fA-F0-9]{40}$",
+                "example": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+            },
+            "Project": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "projectName": {
+                        "type": "string",
+                        "example": "Web3 Authentication System"
+                    },
+                    "projectDescription": {
+                        "type": "string",
+                        "example": "A project to build a decentralized authentication system using blockchain technology."
+                    },
+                    "prizeAmount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1000
+                    },
+                    "projectStatus": {
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "in-progress",
+                            "closed"
+                        ],
+                        "example": "open"
+                    },
+                    "projectOwner": {
+                        "$ref": "#/components/schemas/WalletAddress"
+                    },
+                    "requiredSkills": {
+                        "type": "string",
+                        "example": "JavaScript, React, Solidity"
+                    },
+                    "completionSkills": {
+                        "type": "string",
+                        "example": "Web3, Smart Contract Development"
+                    },
+                    "assignedFreelancer": {
+                        "$ref": "#/components/schemas/WalletAddress",
+                        "nullable": true
+                    },
+                    "projectRepo": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://github.com/example/web3-auth"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "projectName",
+                    "projectStatus",
+                    "projectOwner",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "ProjectList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Project"
+                }
+            },
+            "Company": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "companyName": {
+                        "type": "string",
+                        "example": "Blockchain Innovations Inc."
+                    },
+                    "walletAddress": {
+                        "$ref": "#/components/schemas/WalletAddress"
+                    },
+                    "companyWebsite": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://blockchain-innovations.com"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "companyName",
+                    "walletAddress",
+                    "createdAt"
+                ]
+            },
+            "Freelancer": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "walletAddress": {
+                        "$ref": "#/components/schemas/WalletAddress"
+                    },
+                    "skills": {
+                        "type": "string",
+                        "example": "JavaScript, React, Web3"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "walletAddress",
+                    "createdAt"
+                ]
+            },
+            "Submission": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "projectId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    },
+                    "freelancerWallet": {
+                        "$ref": "#/components/schemas/WalletAddress"
+                    },
+                    "submissionText": {
+                        "type": "string",
+                        "example": "I've completed the project with all requirements."
+                    },
+                    "githubLink": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://github.com/freelancer/project-submission"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "approved",
+                            "rejected"
+                        ],
+                        "example": "pending"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "freelancerName": {
+                        "type": "string",
+                        "example": "John Doe"
+                    }
+                },
+                "required": [
+                    "id",
+                    "projectId",
+                    "freelancerWallet",
+                    "status",
+                    "createdAt"
+                ]
+            },
+            "SubmissionList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Submission"
+                }
+            },
+            "UserProfile": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "walletAddress": {
+                        "$ref": "#/components/schemas/WalletAddress"
+                    },
+                    "userType": {
+                        "type": "string",
+                        "enum": [
+                            "company",
+                            "freelancer"
+                        ],
+                        "example": "company"
+                    }
+                },
+                "required": [
+                    "id",
+                    "walletAddress",
+                    "userType"
+                ]
+            },
+            "ProjectStats": {
+                "type": "object",
+                "properties": {
+                    "totalProjects": {
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "openProjects": {
+                        "type": "integer",
+                        "example": 75
+                    },
+                    "closedProjects": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "inProgressProjects": {
+                        "type": "integer",
+                        "example": 25
+                    },
+                    "totalPrizeAmount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 15000
+                    },
+                    "avgPrizeAmount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 100
+                    }
+                }
+            },
+            "GitHubRepoVerification": {
+                "type": "object",
+                "properties": {
+                    "exists": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "repoName": {
+                        "type": "string",
+                        "example": "example/repo"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Repository description"
+                    },
+                    "stars": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "forks": {
+                        "type": "integer",
+                        "example": 5
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "walletAddressParam": {
+                "name": "walletAddress",
+                "in": "query",
+                "description": "Ethereum wallet address",
+                "required": true,
+                "schema": {
+                    "$ref": "#/components/schemas/WalletAddress"
+                }
+            },
+            "projectIdParam": {
+                "name": "projectId",
+                "in": "path",
+                "description": "ID of the project",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "companyIdParam": {
+                "name": "companyId",
+                "in": "path",
+                "description": "ID of the company",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "freelancerIdParam": {
+                "name": "freelancerId",
+                "in": "path",
+                "description": "ID of the freelancer",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "submissionIdParam": {
+                "name": "submissionId",
+                "in": "query",
+                "description": "ID of the submission",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "responses": {
+            "BadRequest": {
+                "description": "Bad Request - Invalid input data",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        },
+                        "example": {
+                            "isSuccess": false,
+                            "message": "Invalid input data",
+                            "errors": {
+                                "fieldName": [
+                                    "Field is required"
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "Unauthorized - Authentication required",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        },
+                        "example": {
+                            "isSuccess": false,
+                            "message": "Authentication required"
+                        }
+                    }
+                }
+            },
+            "Forbidden": {
+                "description": "Forbidden - Insufficient permissions",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        },
+                        "example": {
+                            "isSuccess": false,
+                            "message": "Insufficient permissions to perform this action"
+                        }
+                    }
+                }
+            },
+            "NotFound": {
+                "description": "Not Found - Resource not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        },
+                        "example": {
+                            "isSuccess": false,
+                            "message": "Resource not found"
+                        }
+                    }
+                }
+            },
+            "ServerError": {
+                "description": "Internal Server Error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        },
+                        "example": {
+                            "isSuccess": false,
+                            "message": "Internal server error"
+                        }
+                    }
+                }
+            }
+        },
+        "requestBodies": {
+            "RegisterUser": {
+                "description": "User registration information",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "walletAddress": {
+                                            "$ref": "#/components/schemas/WalletAddress"
+                                        },
+                                        "userType": {
+                                            "type": "string",
+                                            "enum": [
+                                                "company"
+                                            ],
+                                            "example": "company"
+                                        },
+                                        "companyName": {
+                                            "type": "string",
+                                            "example": "Blockchain Innovations Inc."
+                                        },
+                                        "companyWebsite": {
+                                            "type": "string",
+                                            "format": "uri",
+                                            "example": "https://blockchain-innovations.com"
+                                        }
+                                    },
+                                    "required": [
+                                        "walletAddress",
+                                        "userType",
+                                        "companyName"
+                                    ]
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "walletAddress": {
+                                            "$ref": "#/components/schemas/WalletAddress"
+                                        },
+                                        "userType": {
+                                            "type": "string",
+                                            "enum": [
+                                                "freelancer"
+                                            ],
+                                            "example": "freelancer"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "skills": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": [
+                                                "JavaScript",
+                                                "React",
+                                                "Web3"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "walletAddress",
+                                        "userType",
+                                        "name",
+                                        "skills"
+                                    ]
+                                }
+                            ]
+                        },
+                        "examples": {
+                            "company": {
+                                "value": {
+                                    "walletAddress": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+                                    "userType": "company",
+                                    "companyName": "Blockchain Innovations Inc.",
+                                    "companyWebsite": "https://blockchain-innovations.com"
+                                }
+                            },
+                            "freelancer": {
+                                "value": {
+                                    "walletAddress": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+                                    "userType": "freelancer",
+                                    "name": "John Doe",
+                                    "skills": [
+                                        "JavaScript",
+                                        "React",
+                                        "Web3"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "UpdateUserProfile": {
+                "description": "User profile update information",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "walletAddress": {
+                                    "$ref": "#/components/schemas/WalletAddress"
+                                },
+                                "companyName": {
+                                    "type": "string",
+                                    "example": "Updated Company Name"
+                                },
+                                "companyWebsite": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "example": "https://updated-site.com"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "Updated Name"
+                                },
+                                "skills": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "example": [
+                                        "JavaScript",
+                                        "React",
+                                        "Web3",
+                                        "Solidity"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "walletAddress"
+                            ]
+                        },
+                        "examples": {
+                            "company": {
+                                "value": {
+                                    "walletAddress": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+                                    "companyName": "Updated Company Name",
+                                    "companyWebsite": "https://updated-site.com"
+                                }
+                            },
+                            "freelancer": {
+                                "value": {
+                                    "walletAddress": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+                                    "name": "Updated Name",
+                                    "skills": [
+                                        "JavaScript",
+                                        "React",
+                                        "Web3",
+                                        "Solidity"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "CreateProject": {
+                "description": "Project creation information",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "projectName": {
+                                    "type": "string",
+                                    "example": "Web3 Authentication System"
+                                },
+                                "projectDescription": {
+                                    "type": "string",
+                                    "example": "A project to build a decentralized authentication system using blockchain technology."
+                                },
+                                "projectLink": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "example": "https://github.com/example/web3-auth"
+                                },
+                                "prizeAmount": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 1000
+                                },
+                                "projectOwner": {
+                                    "$ref": "#/components/schemas/WalletAddress"
+                                },
+                                "requiredSkills": {
+                                    "oneOf": [
+                                        {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": [
+                                                "JavaScript",
+                                                "React",
+                                                "Web3"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "example": "JavaScript, React, Web3"
+                                        }
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "projectName",
+                                "projectOwner"
+                            ]
+                        }
+                    }
+                }
+            },
+            "UpdateProject": {
+                "description": "Project update information",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "projectName": {
+                                    "type": "string",
+                                    "example": "Updated Project Name"
+                                },
+                                "projectDescription": {
+                                    "type": "string",
+                                    "example": "Updated project description"
+                                },
+                                "projectLink": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "example": "https://github.com/example/updated-repo"
+                                },
+                                "prizeAmount": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 1500
+                                },
+                                "requiredSkills": {
+                                    "oneOf": [
+                                        {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ],
+                                    "example": [
+                                        "JavaScript",
+                                        "React",
+                                        "Web3",
+                                        "Solidity"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "UpdateProjectStatus": {
+                "description": "Project status update information",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "open",
+                                        "in-progress",
+                                        "closed"
+                                    ],
+                                    "example": "in-progress"
+                                },
+                                "walletAddress": {
+                                    "$ref": "#/components/schemas/WalletAddress"
+                                }
+                            },
+                            "required": [
+                                "status",
+                                "walletAddress"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AssignFreelancer": {
+                "description": "Freelancer assignment information",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "freelancerWallet": {
+                                    "$ref": "#/components/schemas/WalletAddress"
+                                },
+                                "companyWallet": {
+                                    "$ref": "#/components/schemas/WalletAddress"
+                                }
+                            },
+                            "required": [
+                                "freelancerWallet",
+                                "companyWallet"
+                            ]
+                        }
+                    }
+                }
+            },
+            "CreateSubmission": {
+                "description": "Submission creation information",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "projectId": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                                },
+                                "freelancerWallet": {
+                                    "$ref": "#/components/schemas/WalletAddress"
+                                },
+                                "submissionText": {
+                                    "type": "string",
+                                    "example": "I've completed the project with all requirements."
+                                },
+                                "githubLink": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "example": "https://github.com/freelancer/project-submission"
+                                }
+                            },
+                            "required": [
+                                "projectId",
+                                "freelancerWallet",
+                                "submissionText"
+                            ]
+                        }
+                    }
+                }
+            },
+            "ApproveSubmission": {
+                "description": "Submission approval information",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "submissionId": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                                },
+                                "companyWallet": {
+                                    "$ref": "#/components/schemas/WalletAddress"
+                                }
+                            },
+                            "required": [
+                                "submissionId",
+                                "companyWallet"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "Register"
+                ],
+                "summary": "Register a new user",
+                "description": "Creates a new user profile (either company or freelancer)",
+                "operationId": "registerUser",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/RegisterUser"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Registration successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Registration successful"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserProfile"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "409": {
+                        "description": "Conflict - User already registered",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "isSuccess": false,
+                                    "message": "User already registered with this wallet address"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/userProfile": {
+            "get": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Get user profile",
+                "description": "Retrieves user profile information (for either company or freelancer)",
+                "operationId": "getUserProfile",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/walletAddressParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User profile retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "oneOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/Company"
+                                                },
+                                                {
+                                                    "$ref": "#/components/schemas/Freelancer"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Update user profile",
+                "description": "Updates user profile information",
+                "operationId": "updateUserProfile",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/UpdateUserProfile"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile updated successfully"
+                                        },
+                                        "data": {
+                                            "oneOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/Company"
+                                                },
+                                                {
+                                                    "$ref": "#/components/schemas/Freelancer"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/projects": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "List projects",
+                "description": "Returns a list of projects, with optional filtering",
+                "operationId": "listProjects",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by project status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "open",
+                                "in-progress",
+                                "closed"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "skill",
+                        "in": "query",
+                        "description": "Filter by required skill",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "minPrize",
+                        "in": "query",
+                        "description": "Minimum prize amount",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "maxPrize",
+                        "in": "query",
+                        "description": "Maximum prize amount",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "owner",
+                        "in": "query",
+                        "description": "Filter by project owner wallet address",
+                        "schema": {
+                            "$ref": "#/components/schemas/WalletAddress"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort field",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created",
+                                "prize",
+                                "name"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Sort order",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit number of results (default 20, max 100)",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Pagination offset",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "default": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Projects retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProjectList"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Create project",
+                "description": "Creates a new project",
+                "operationId": "createProject",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/CreateProject"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Project created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Project created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Project"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Get project details",
+                "description": "Retrieves detailed information about a specific project",
+                "operationId": "getProjectDetails",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/projectIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Project details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/Project"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "companyId": {
+                                                            "type": "string",
+                                                            "format": "uuid"
+                                                        },
+                                                        "companyName": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Update project",
+                "description": "Updates a specific project",
+                "operationId": "updateProject",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/projectIdParam"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/UpdateProject"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Project updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Project updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Project"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Delete project",
+                "description": "Deletes a specific project",
+                "operationId": "deleteProject",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/projectIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Project deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Project deleted successfully"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/status": {
+            "put": {
+                "tags": [
+                    "Project Status"
+                ],
+                "summary": "Update project status",
+                "description": "Updates the status of a project",
+                "operationId": "updateProjectStatus",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/projectIdParam"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/UpdateProjectStatus"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Project status updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Project status updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Project"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/assign": {
+            "post": {
+                "tags": [
+                    "Project Assignment"
+                ],
+                "summary": "Assign freelancer to project",
+                "description": "Assigns a freelancer to a project",
+                "operationId": "assignFreelancer",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/projectIdParam"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/AssignFreelancer"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Freelancer assigned successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Freelancer assigned successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Project"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "409": {
+                        "description": "Conflict - Project already has an assigned freelancer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "isSuccess": false,
+                                    "message": "Project already has an assigned freelancer"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/projects/search": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Search projects",
+                "description": "Searches for projects using a text query",
+                "operationId": "searchProjects",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Search query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Maximum number of results (default: 20, max: 100)",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Pagination offset",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "default": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProjectList"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/projects/stats": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Get project statistics",
+                "description": "Retrieves statistics about projects",
+                "operationId": "getProjectStats",
+                "parameters": [
+                    {
+                        "name": "walletAddress",
+                        "in": "query",
+                        "description": "Optional wallet address to filter statistics for a specific user",
+                        "schema": {
+                            "$ref": "#/components/schemas/WalletAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Project statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProjectStats"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/submissions": {
+            "get": {
+                "tags": [
+                    "Submissions"
+                ],
+                "summary": "Get project submissions",
+                "description": "Retrieves submissions for a specific project",
+                "operationId": "getProjectSubmissions",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/projectIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Project submissions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/SubmissionList"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/submissions/create": {
+            "post": {
+                "tags": [
+                    "Submissions"
+                ],
+                "summary": "Create submission",
+                "description": "Creates a new project submission",
+                "operationId": "createSubmission",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/CreateSubmission"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Submission created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submission created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Submission"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/submissions/read": {
+            "get": {
+                "tags": [
+                    "Submissions"
+                ],
+                "summary": "Get submissions",
+                "description": "Retrieves submissions for a specific project",
+                "operationId": "getSubmissions",
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "query",
+                        "description": "ID of the project",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Submissions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/SubmissionList"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/submissions/approve": {
+            "post": {
+                "tags": [
+                    "Submissions"
+                ],
+                "summary": "Approve submission",
+                "description": "Approves a project submission",
+                "operationId": "approveSubmission",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/ApproveSubmission"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Submission approved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submission approved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Submission"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/submissions/delete": {
+            "delete": {
+                "tags": [
+                    "Submissions"
+                ],
+                "summary": "Delete submission",
+                "description": "Deletes a project submission",
+                "operationId": "deleteSubmission",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/submissionIdParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/walletAddressParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Submission deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submission deleted successfully"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/company/{companyId}": {
+            "get": {
+                "tags": [
+                    "Company"
+                ],
+                "summary": "Get company details",
+                "description": "Retrieves detailed information about a specific company",
+                "operationId": "getCompanyDetails",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/companyIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Company details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Company"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/freelancer/{freelancerId}": {
+            "get": {
+                "tags": [
+                    "Freelancer"
+                ],
+                "summary": "Get freelancer details",
+                "description": "Retrieves detailed information about a specific freelancer",
+                "operationId": "getFreelancerDetails",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/freelancerIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Freelancer details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Freelancer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/github/verify": {
+            "get": {
+                "tags": [
+                    "GitHub"
+                ],
+                "summary": "Verify GitHub repository",
+                "description": "Verifies if a GitHub repository exists and is accessible",
+                "operationId": "verifyGitHubRepo",
+                "parameters": [
+                    {
+                        "name": "repo",
+                        "in": "query",
+                        "description": "GitHub repository URL",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uri"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GitHub repository verification result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/GitHubRepoVerification"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "description": "Repository not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "isSuccess": false,
+                                    "message": "GitHub repository not found or not accessible"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/api-spec": {
+            "get": {
+                "tags": [
+                    "Documentation"
+                ],
+                "summary": "Get API specification",
+                "description": "Returns the complete OpenAPI specification for the API",
+                "operationId": "getApiSpec",
+                "responses": {
+                    "200": {
+                        "description": "OpenAPI specification",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/docs": {
+            "get": {
+                "tags": [
+                    "Documentation"
+                ],
+                "summary": "Interactive API documentation",
+                "description": "Renders the Swagger UI for interactive API documentation",
+                "operationId": "getApiDocs",
+                "responses": {
+                    "200": {
+                        "description": "HTML page with Swagger UI",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

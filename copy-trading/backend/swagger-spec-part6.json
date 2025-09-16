@@ -1,0 +1,402 @@
+{
+    "paths": {
+        "/submissions/create": {
+            "post": {
+                "tags": [
+                    "Submissions"
+                ],
+                "summary": "Create submission",
+                "description": "Creates a new project submission",
+                "operationId": "createSubmission",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/CreateSubmission"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Submission created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submission created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Submission"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/submissions/read": {
+            "get": {
+                "tags": [
+                    "Submissions"
+                ],
+                "summary": "Get submissions",
+                "description": "Retrieves submissions for a specific project",
+                "operationId": "getSubmissions",
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "query",
+                        "description": "ID of the project",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Submissions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/SubmissionList"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/submissions/approve": {
+            "post": {
+                "tags": [
+                    "Submissions"
+                ],
+                "summary": "Approve submission",
+                "description": "Approves a project submission",
+                "operationId": "approveSubmission",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/ApproveSubmission"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Submission approved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submission approved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Submission"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/submissions/delete": {
+            "delete": {
+                "tags": [
+                    "Submissions"
+                ],
+                "summary": "Delete submission",
+                "description": "Deletes a project submission",
+                "operationId": "deleteSubmission",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/submissionIdParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/walletAddressParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Submission deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submission deleted successfully"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/company/{companyId}": {
+            "get": {
+                "tags": [
+                    "Company"
+                ],
+                "summary": "Get company details",
+                "description": "Retrieves detailed information about a specific company",
+                "operationId": "getCompanyDetails",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/companyIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Company details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Company"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/freelancer/{freelancerId}": {
+            "get": {
+                "tags": [
+                    "Freelancer"
+                ],
+                "summary": "Get freelancer details",
+                "description": "Retrieves detailed information about a specific freelancer",
+                "operationId": "getFreelancerDetails",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/freelancerIdParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Freelancer details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Freelancer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/github/verify": {
+            "get": {
+                "tags": [
+                    "GitHub"
+                ],
+                "summary": "Verify GitHub repository",
+                "description": "Verifies if a GitHub repository exists and is accessible",
+                "operationId": "verifyGitHubRepo",
+                "parameters": [
+                    {
+                        "name": "repo",
+                        "in": "query",
+                        "description": "GitHub repository URL",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uri"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GitHub repository verification result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "isSuccess": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/GitHubRepoVerification"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "description": "Repository not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "isSuccess": false,
+                                    "message": "GitHub repository not found or not accessible"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "/api-spec": {
+            "get": {
+                "tags": [
+                    "Documentation"
+                ],
+                "summary": "Get API specification",
+                "description": "Returns the complete OpenAPI specification for the API",
+                "operationId": "getApiSpec",
+                "responses": {
+                    "200": {
+                        "description": "OpenAPI specification",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/docs": {
+            "get": {
+                "tags": [
+                    "Documentation"
+                ],
+                "summary": "Interactive API documentation",
+                "description": "Renders the Swagger UI for interactive API documentation",
+                "operationId": "getApiDocs",
+                "responses": {
+                    "200": {
+                        "description": "HTML page with Swagger UI",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

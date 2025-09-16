@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnLedger API Documentation</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    .header {
+      background-color: #1a365d;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .header .links {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .header a {
+      color: white;
+      text-decoration: none;
+    }
+    
+    .header a:hover {
+      text-decoration: underline;
+    }
+    
+    #swagger-ui {
+      margin-top: 0;
+    }
+    
+    .swagger-ui .topbar {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>LearnLedger API</h1>
+    <div class="links">
+      <a href="https://github.com/your-repo/project-ledger" target="_blank">GitHub</a>
+      <a href="./api-spec.json" target="_blank">Download OpenAPI Spec</a>
+    </div>
+  </div>
+  
+  <div id="swagger-ui"></div>
+  
+  <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function() {
+      // Fetch the API spec from the JSON file
+      fetch('./api-spec.json')
+        .then(response => response.json())
+        .then(spec => {
+          // Initialize Swagger UI
+          window.ui = SwaggerUIBundle({
+            spec: spec,
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+              SwaggerUIBundle.presets.apis,
+              SwaggerUIStandalonePreset
+            ],
+            plugins: [
+              SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "StandaloneLayout"
+          });
+        })
+        .catch(error => {
+          console.error('Error loading API spec:', error);
+          document.getElementById('swagger-ui').innerHTML = `
+            <div style="padding: 2rem; color: red;">
+              <h2>Error Loading API Documentation</h2>
+              <p>Could not load the API specification. Please check if api-spec.json is available.</p>
+              <p>Error details: ${error.message}</p>
+            </div>
+          `;
+        });
+    };
+  </script>
+</body>
+</html> 

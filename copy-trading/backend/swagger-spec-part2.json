@@ -1,0 +1,290 @@
+{
+    "components": {
+        "schemas": {
+            "Project": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "projectName": {
+                        "type": "string",
+                        "example": "Web3 Authentication System"
+                    },
+                    "projectDescription": {
+                        "type": "string",
+                        "example": "A project to build a decentralized authentication system using blockchain technology."
+                    },
+                    "prizeAmount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1000
+                    },
+                    "projectStatus": {
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "in-progress",
+                            "closed"
+                        ],
+                        "example": "open"
+                    },
+                    "projectOwner": {
+                        "$ref": "#/components/schemas/WalletAddress"
+                    },
+                    "requiredSkills": {
+                        "type": "string",
+                        "example": "JavaScript, React, Solidity"
+                    },
+                    "completionSkills": {
+                        "type": "string",
+                        "example": "Web3, Smart Contract Development"
+                    },
+                    "assignedFreelancer": {
+                        "$ref": "#/components/schemas/WalletAddress",
+                        "nullable": true
+                    },
+                    "projectRepo": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://github.com/example/web3-auth"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "projectName",
+                    "projectStatus",
+                    "projectOwner",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "ProjectList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Project"
+                }
+            },
+            "Company": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "companyName": {
+                        "type": "string",
+                        "example": "Blockchain Innovations Inc."
+                    },
+                    "walletAddress": {
+                        "$ref": "#/components/schemas/WalletAddress"
+                    },
+                    "companyWebsite": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://blockchain-innovations.com"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "companyName",
+                    "walletAddress",
+                    "createdAt"
+                ]
+            },
+            "Freelancer": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "walletAddress": {
+                        "$ref": "#/components/schemas/WalletAddress"
+                    },
+                    "skills": {
+                        "type": "string",
+                        "example": "JavaScript, React, Web3"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "walletAddress",
+                    "createdAt"
+                ]
+            },
+            "Submission": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "projectId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174001"
+                    },
+                    "freelancerWallet": {
+                        "$ref": "#/components/schemas/WalletAddress"
+                    },
+                    "submissionText": {
+                        "type": "string",
+                        "example": "I've completed the project with all requirements."
+                    },
+                    "githubLink": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://github.com/freelancer/project-submission"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "approved",
+                            "rejected"
+                        ],
+                        "example": "pending"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "freelancerName": {
+                        "type": "string",
+                        "example": "John Doe"
+                    }
+                },
+                "required": [
+                    "id",
+                    "projectId",
+                    "freelancerWallet",
+                    "status",
+                    "createdAt"
+                ]
+            },
+            "SubmissionList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Submission"
+                }
+            },
+            "UserProfile": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "walletAddress": {
+                        "$ref": "#/components/schemas/WalletAddress"
+                    },
+                    "userType": {
+                        "type": "string",
+                        "enum": [
+                            "company",
+                            "freelancer"
+                        ],
+                        "example": "company"
+                    }
+                },
+                "required": [
+                    "id",
+                    "walletAddress",
+                    "userType"
+                ]
+            },
+            "ProjectStats": {
+                "type": "object",
+                "properties": {
+                    "totalProjects": {
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "openProjects": {
+                        "type": "integer",
+                        "example": 75
+                    },
+                    "closedProjects": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "inProgressProjects": {
+                        "type": "integer",
+                        "example": 25
+                    },
+                    "totalPrizeAmount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 15000
+                    },
+                    "avgPrizeAmount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 100
+                    }
+                }
+            },
+            "GitHubRepoVerification": {
+                "type": "object",
+                "properties": {
+                    "exists": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "repoName": {
+                        "type": "string",
+                        "example": "example/repo"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Repository description"
+                    },
+                    "stars": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "forks": {
+                        "type": "integer",
+                        "example": 5
+                    }
+                }
+            }
+        }
+    }
+}

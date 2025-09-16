@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+:root {
+  color-scheme: light;
+  --color-background: #ffffff;
+  --color-surface: var(--color-surface);
+  --color-surface-alt: var(--color-surface-alt);
+  --color-surface-elevated: #ffffff;
+  --color-border: var(--color-border);
+  --color-subtle-border: var(--color-border);
+  --color-text: #111827;
+  --color-text-muted: var(--color-text-muted);
+  --color-text-subtle: var(--color-text-subtle);
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-muted: rgba(37, 70, 240, 0.1);
+  --color-accent: #4b5563;
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-danger: var(--color-danger);
+  --color-info: #3b82f6;
+  --color-success-surface: rgba(16, 185, 129, 0.12);
+  --color-warning-surface: rgba(245, 158, 11, 0.15);
+  --color-danger-surface: rgba(239, 68, 68, 0.16);
+  --color-info-surface: rgba(59, 130, 246, 0.12);
+  --color-neutral-surface: rgba(107, 114, 128, 0.12);
+  --color-overlay: rgba(15, 23, 42, 0.65);
+  --color-nav-background: var(--color-primary);
+  --color-nav-text: #ffffff;
+  --color-sidebar-background: #ffffff;
+  --color-sidebar-hover: #f2f4fe;
+  --color-sidebar-active: #f2f4fe;
+  --color-sidebar-text: var(--color-text);
+  --color-sidebar-active-text: var(--color-primary);
+}
+
+.dark {
+  color-scheme: dark;
+  --color-background: #0b1120;
+  --color-surface: #111827;
+  --color-surface-alt: var(--color-text);
+  --color-surface-elevated: var(--color-text);
+  --color-border: var(--color-text);
+  --color-subtle-border: var(--color-text);
+  --color-text: var(--color-surface);
+  --color-text-muted: #cbd5f5;
+  --color-text-subtle: #93a3c1;
+  --color-primary: #5c7cff;
+  --color-primary-hover: #7890ff;
+  --color-primary-muted: rgba(92, 124, 255, 0.12);
+  --color-accent: var(--color-text-subtle);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-danger: var(--color-danger);
+  --color-info: #60a5fa;
+  --color-success-surface: rgba(52, 211, 153, 0.2);
+  --color-warning-surface: rgba(251, 191, 36, 0.22);
+  --color-danger-surface: rgba(248, 113, 113, 0.24);
+  --color-info-surface: rgba(96, 165, 250, 0.18);
+  --color-neutral-surface: rgba(148, 163, 184, 0.18);
+  --color-overlay: rgba(8, 13, 26, 0.7);
+  --color-nav-background: #111827;
+  --color-nav-text: var(--color-surface);
+  --color-sidebar-background: #111827;
+  --color-sidebar-hover: rgba(92, 124, 255, 0.12);
+  --color-sidebar-active: rgba(92, 124, 255, 0.18);
+  --color-sidebar-text: var(--color-border);
+  --color-sidebar-active-text: #ffffff;
+}
+
+html {
+  width: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  font-family: 'Nunito', serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+a {
+  border: none;
+  color: inherit;
+}
+
+input,
+textarea,
+button,
+select,
+div,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+div {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+div::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes swipeRight {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeLeft {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%) scale(0.8);
+    opacity: 0;
+  }
+}
+
+.swipe-right {
+  animation: swipeRight 0.4s ease-in-out forwards;
+}
+
+.swipe-left {
+  animation: swipeLeft 0.4s ease-in-out forwards;
+}
