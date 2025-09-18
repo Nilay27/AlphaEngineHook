@@ -24,14 +24,7 @@ const CORS_CONFIG = {
   },
   production: {
     origins: [
-      'https://learn-ledger-api.vercel.app',
-      'https://learn-ledger.vercel.app',
-      'https://learnledger.xyz',
-      'https://www.learnledger.xyz',
-      'https://api.learnledger.xyz',
-      'https://www.api.learnledger.xyz',
-      // Add subdomains to handle all possible variations
-      'https://*.learnledger.xyz',
+      // AlphaEngine production domains (to be added when deployed)
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:3002',
@@ -123,13 +116,7 @@ export async function middleware(request: NextRequest) {
     // For now, we'll use a simple check for known routes
     
     const routesWithCorsMidware = [
-      '/api/userProfile',
-      '/api/freelancer',
-      '/api/projects',
-      '/api/register',
-      '/api/submissions',
       '/api/docs',
-      '/api/updates',
       '/api/api-spec'
     ];
     

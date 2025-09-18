@@ -1,11 +1,11 @@
 /**
- * Utils for handling EIP-712 typed signatures for LearnLedger.
+ * Utils for handling EIP-712 typed signatures for AlphaEngine.
  * Compatible with ethers v6.
  */
 
 // The domain definition consistent across all EIP-712 signatures in our app
 export const getEIP712Domain = () => ({
-  name: 'LearnLedger',
+  name: 'AlphaEngine',
   version: '1',
   chainId: process.env.NEXT_PUBLIC_CHAIN_ID || '1',
   verifyingContract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000'

@@ -251,7 +251,7 @@ export default function TradeExecutionModal({
         ...extraParams
       };
 
-      const response = await confirmationsService.broadcastTrade({
+      await confirmationsService.broadcastTrade({
         strategyId,
         executionParams,
         gasEstimate: gasEstimate || undefined
@@ -264,8 +264,8 @@ export default function TradeExecutionModal({
         onSubmit();
       }, 2000);
 
-    } catch (err: any) {
-      setError(err.message || 'Failed to broadcast trade');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to broadcast trade');
     } finally {
       setSubmitting(false);
     }

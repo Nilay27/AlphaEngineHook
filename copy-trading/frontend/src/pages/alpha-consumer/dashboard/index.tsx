@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useAccount } from 'wagmi';
 import { apiClient } from '@/utils/api-client';
+import { TradeConfirmation, Subscription } from '@/types/alphaengine';
 
 const DashboardContainer = styled.div`
   padding: 24px;
@@ -259,20 +260,17 @@ export default function AlphaConsumerDashboard() {
       setLoading(true);
       
       // Fetch subscriptions
-      const subscriptionsRes = await apiClient.get('/api/consumer/subscriptions', {
+      const subscriptions = await apiClient.get<Subscription[]>('/api/consumer/subscriptions', {
         params: { alphaConsumerAddress: address }
       });
-      
+
       // Fetch pending trades
-      const pendingTradesRes = await apiClient.get('/api/consumer/pending-trades', {
+      const pendingTrades = await apiClient.get<TradeConfirmation[]>('/api/consumer/pending-trades', {
         params: { alphaConsumerAddress: address }
       });
-      
-      const subscriptions = subscriptionsRes.data || [];
-      const pendingTrades = pendingTradesRes.data || [];
       
       // Process recent trades from actual data
-      const recentTrades = pendingTrades.slice(0, 5).map((trade: any, index: number) => ({
+      const recentTrades = (pendingTrades || []).slice(0, 5).map((trade: TradeConfirmation, index: number) => ({
         id: trade.confirmationId || `trade-${index}`,
         strategyName: `Strategy ${trade.strategyId?.substring(0, 8) || index + 1}`,
         status: trade.isExecuted ? 'executed' : 'pending',
@@ -280,9 +278,9 @@ export default function AlphaConsumerDashboard() {
       }));
       
       setStats({
-        activeSubscriptions: subscriptions.length,
-        pendingConfirmations: pendingTrades.filter((t: any) => !t.isExecuted).length,
-        executedTrades: pendingTrades.filter((t: any) => t.isExecuted).length,
+        activeSubscriptions: (subscriptions || []).length,
+        pendingConfirmations: (pendingTrades || []).filter((t: TradeConfirmation) => !t.isExecuted).length,
+        executedTrades: (pendingTrades || []).filter((t: TradeConfirmation) => t.isExecuted).length,
         totalSpent: 0, // TODO: Calculate from actual subscription fees
         recentTrades: recentTrades
       });
@@ -328,7 +326,7 @@ export default function AlphaConsumerDashboard() {
     }
   ];
 
-  const handleViewConfirmation = (tradeId: string) => {
+  const handleViewConfirmation = (_tradeId: string) => {
     router.push('/alpha-consumer/confirmations');
   };
 

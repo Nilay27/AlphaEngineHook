@@ -1,17 +1,7 @@
 -- AlphaEngine Database Migration
 -- Clean slate approach - create fresh tables for copy trading functionality
 
--- Drop existing LearnLedger tables if needed (optional - can be done manually)
--- DROP TABLE IF EXISTS projects CASCADE;
--- DROP TABLE IF EXISTS project_submissions CASCADE;
--- DROP TABLE IF EXISTS courses CASCADE;
--- DROP TABLE IF EXISTS enrollments CASCADE;
--- DROP TABLE IF EXISTS company CASCADE;
--- DROP TABLE IF EXISTS freelancer CASCADE;
--- DROP TABLE IF EXISTS skills CASCADE;
--- DROP TABLE IF EXISTS user_skills CASCADE;
--- DROP TABLE IF EXISTS user_balances CASCADE;
--- DROP TABLE IF EXISTS bookmarks CASCADE;
+-- AlphaEngine core database tables for copy trading platform
 
 -- Create strategies table
 CREATE TABLE IF NOT EXISTS strategies (

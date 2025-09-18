@@ -1,8 +1,0 @@
-[build]
-  publish = "static/"  # Directory to publish
-  command = "npm run static-docs"  # Command to build the site
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200 

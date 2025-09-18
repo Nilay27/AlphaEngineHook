@@ -1,1 +1,0 @@
-ALTER TABLE "user_skills" ALTER COLUMN "skill_id" SET DATA TYPE uuid;

@@ -5,3 +5,14 @@
 
 # Node modules
 node_modules/
+
+# Playwright MCP server files and screenshots
+.playwright-mcp/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.webp
+*.svg
+.claude/*/*

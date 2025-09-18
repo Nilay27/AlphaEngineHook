@@ -39,7 +39,7 @@ export interface TradeConfirmation {
   isExecuted: boolean;
   executionTxHash?: string;
   createdAt: string;
-  updatedAt?: string;
+  updatedAt: string;
 }
 
 /**
@@ -53,8 +53,8 @@ export const broadcastTrade = async (
     const response = await withRetry(() =>
       apiClient.post<BroadcastTradeResponse>('/api/confirmations/broadcast', input)
     );
-    
-    return response.data;
+
+    return response;
   } catch (error) {
     return handleApiError(error);
   }
@@ -79,7 +79,7 @@ export const completeConfirmation = async (
       apiClient.patch<TradeConfirmation>(`/api/confirmations/${confirmationId}`, data)
     );
     
-    return response.data;
+    return response;
   } catch (error) {
     return handleApiError(error);
   }
@@ -98,7 +98,7 @@ export const getPendingConfirmations = async (
       })
     );
     
-    return response.data;
+    return response;
   } catch (error) {
     return handleApiError(error);
   }
@@ -112,10 +112,10 @@ export const getStrategyConfirmations = async (
 ): Promise<TradeConfirmation[]> => {
   try {
     const response = await withRetry(() =>
-      apiClient.get<TradeConfirmation[]>(`/api/strategies/${strategyId}/confirmations`)
+      apiClient.get<TradeConfirmation[]>(`/api/v1/strategies/${strategyId}/confirmations`)
     );
     
-    return response.data;
+    return response;
   } catch (error) {
     return handleApiError(error);
   }

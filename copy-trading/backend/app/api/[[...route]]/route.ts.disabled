@@ -1,0 +1,98 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
+
+// This is a catch-all API route handler that forwards requests to the appropriate handlers
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { route?: string[] } }
+) {
+  const routePath = params.route?.join('/') || '';
+  const url = new URL(request.url);
+
+  try {
+    // If this is the root API path, return API documentation info
+    if (!routePath) {
+      return NextResponse.json({
+        name: "AlphaEngine API",
+        version: "1.0.0",
+        description: "API for AlphaEngine - a blockchain-based copy trading platform",
+        status: {
+          database: "CONNECTED"
+        },
+        endpoints: {
+          "/api/strategies": "Get all trading strategies or create a new strategy",
+          "/api/strategies/{strategyId}": "Get, update or manage a specific strategy",
+          "/api/consumer/subscriptions": "Get user's active subscriptions",
+          "/api/consumer/pending-trades": "Get pending trade confirmations",
+          "/api/confirmations/{confirmationId}": "Confirm or reject trade confirmations",
+          "/api/confirmations/broadcast": "Broadcast confirmed trades",
+        },
+        documentation: "For detailed API documentation, see /docs/api"
+      });
+    }
+
+    // No specific route handling - return 404 for unknown paths
+    return NextResponse.json({ error: 'API route not found' }, { status: 404 });
+  } catch (error) {
+    console.error('API route error:', error);
+
+    // Check if it's a database connection error
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const isDbConnectionError =
+      errorMessage.includes('getaddrinfo') ||
+      errorMessage.includes('ENOTFOUND') ||
+      errorMessage.includes('database');
+
+    if (isDbConnectionError) {
+      return NextResponse.json(
+        {
+          error: 'Database connection error',
+          message: 'Unable to connect to the database. Please check your DATABASE_URL configuration.'
+        },
+        { status: 503 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { route?: string[] } }
+) {
+  const routePath = params.route?.join('/') || '';
+
+  try {
+    // No POST routes handled through catch-all for AlphaEngine
+    return NextResponse.json({ error: 'API route not found' }, { status: 404 });
+  } catch (error) {
+    console.error('API route error:', error);
+
+    // Check if it's a database connection error
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const isDbConnectionError =
+      errorMessage.includes('getaddrinfo') ||
+      errorMessage.includes('ENOTFOUND') ||
+      errorMessage.includes('database');
+
+    if (isDbConnectionError) {
+      return NextResponse.json(
+        {
+          error: 'Database connection error',
+          message: 'Unable to connect to the database. Please check your DATABASE_URL configuration.'
+        },
+        { status: 503 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+} 

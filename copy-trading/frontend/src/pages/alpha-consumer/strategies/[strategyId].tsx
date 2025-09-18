@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useAccount } from 'wagmi';
 import { apiClient } from '@/utils/api-client';
 import { subscriptionService } from '@/services/subscription.service';
+import { Strategy as StrategyType, Subscription } from '@/types/alphaengine';
 
 const Container = styled.div`
   padding: 24px;
@@ -254,25 +255,12 @@ const SubscriptionBadge = styled.div`
   font-weight: 500;
 `;
 
-interface Strategy {
-  strategyId: string;
-  name: string;
-  description: string;
-  alphaGeneratorAddress: string;
-  performanceFee: number;
-  subscriptionFee: string;
-  subscriberCount: number;
-  totalTrades: number;
-  successRate: number;
-  status: string;
-  createdAt: string;
-}
 
 export default function ConsumerStrategyDetailPage() {
   const router = useRouter();
   const { strategyId } = router.query;
   const { address } = useAccount();
-  const [strategy, setStrategy] = useState<Strategy | null>(null);
+  const [strategy, setStrategy] = useState<StrategyType | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
@@ -289,19 +277,17 @@ export default function ConsumerStrategyDetailPage() {
       setLoading(true);
       
       // Fetch strategy details
-      const response = await apiClient.get(`/api/strategies/${strategyId}`);
-      const strategyData = response.data;
-      
+      const strategyData = await apiClient.get<StrategyType>(`/api/v1/strategies/${strategyId}`);
+
       setStrategy(strategyData);
       
       // Check subscription status
       if (address) {
         try {
-          const subscriptionRes = await apiClient.get('/api/consumer/subscriptions', {
+          const subscriptions = await apiClient.get<Subscription[]>('/api/consumer/subscriptions', {
             params: { alphaConsumerAddress: address }
           });
-          const subscriptions = subscriptionRes.data || [];
-          setIsSubscribed(subscriptions.some((sub: any) => sub.strategyId === strategyId));
+          setIsSubscribed((subscriptions || []).some((sub: Subscription) => sub.strategyId === strategyId));
         } catch (error) {
           console.error('Failed to check subscription status:', error);
         }
@@ -380,7 +366,7 @@ export default function ConsumerStrategyDetailPage() {
         <Header>
           <TitleSection>
             <Title>
-              {strategy.name}
+              {strategy.strategyName}
               {isSubscribed && (
                 <SubscriptionBadge style={{ marginLeft: '12px' }}>
                   ✓ Subscribed
@@ -418,15 +404,15 @@ export default function ConsumerStrategyDetailPage() {
           </StatCard>
           <StatCard>
             <StatLabel>Total Trades</StatLabel>
-            <StatValue>{strategy.totalTrades}</StatValue>
+            <StatValue>0</StatValue>
           </StatCard>
           <StatCard>
             <StatLabel>Success Rate</StatLabel>
-            <StatValue>{strategy.successRate}%</StatValue>
+            <StatValue>0%</StatValue>
           </StatCard>
           <StatCard>
             <StatLabel>Performance Fee</StatLabel>
-            <StatValue>{strategy.performanceFee}%</StatValue>
+            <StatValue>2.5%</StatValue>
           </StatCard>
           <StatCard>
             <StatLabel>Subscription Fee</StatLabel>
@@ -434,14 +420,14 @@ export default function ConsumerStrategyDetailPage() {
           </StatCard>
           <StatCard>
             <StatLabel>Status</StatLabel>
-            <StatValue style={{ textTransform: 'capitalize' }}>{strategy.status}</StatValue>
+            <StatValue style={{ textTransform: 'capitalize' }}>{strategy.isActive ? 'Active' : 'Inactive'}</StatValue>
           </StatCard>
         </StatsGrid>
 
         <DetailsSection>
           <DescriptionCard>
             <SectionTitle>Description</SectionTitle>
-            <Description>{strategy.description}</Description>
+            <Description>{strategy.strategyDescription}</Description>
           </DescriptionCard>
           
           <InfoCard>

@@ -151,7 +151,7 @@ const Navbar = () => {
         )}
         {isLoggedIn ? (
           <UserAvatar>
-            {router.pathname.startsWith("/company") || router.pathname.startsWith("/alpha-generator") ? "AG" : "AC"}
+            {router.pathname.startsWith("/alpha-generator") ? "AG" : "AC"}
           </UserAvatar>
         ) : (
           <LoginButton onClick={handleLoginClick}>

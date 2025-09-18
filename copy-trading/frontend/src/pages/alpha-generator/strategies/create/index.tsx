@@ -47,7 +47,7 @@ const PageDescription = styled.p`
 `;
 
 const FormCard = styled.div`
-  background: white;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 32px;
@@ -94,17 +94,19 @@ const RequiredIndicator = styled.span`
 const Input = styled.input`
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--color-text-subtle);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 14px;
+  background: var(--color-background);
+  color: var(--color-text);
   transition: all 0.2s;
-  
+
   &:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(37, 70, 240, 0.1);
+    box-shadow: 0 0 0 3px var(--color-primary-muted);
   }
-  
+
   &::placeholder {
     color: var(--color-text-subtle);
   }
@@ -113,20 +115,22 @@ const Input = styled.input`
 const TextArea = styled.textarea`
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--color-text-subtle);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 14px;
   font-family: inherit;
+  background: var(--color-background);
+  color: var(--color-text);
   resize: vertical;
   min-height: 100px;
   transition: all 0.2s;
-  
+
   &:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(37, 70, 240, 0.1);
+    box-shadow: 0 0 0 3px var(--color-primary-muted);
   }
-  
+
   &::placeholder {
     color: var(--color-text-subtle);
   }
@@ -193,12 +197,12 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   transition: all 0.2s;
   
   ${props => props.variant === 'secondary' ? `
-    background: white;
+    background: var(--color-surface);
     color: var(--color-text-muted);
     border: 1px solid var(--color-border);
-    
+
     &:hover {
-      background: var(--color-surface);
+      background: var(--color-background);
       border-color: var(--color-text-subtle);
     }
   ` : `
@@ -359,7 +363,7 @@ const CreateStrategyPage: React.FC = () => {
         alphaGeneratorAddress: address!
       };
       
-      const response = await axios.post(`${API_URL}/api/strategies`, payload);
+      const response = await axios.post(`${API_URL}/api/v1/strategies`, payload);
       
       if (response.data?.isSuccess) {
         setSuccess(true);

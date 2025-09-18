@@ -1,1 +1,0 @@
-ALTER TABLE "bookmarks" ADD COLUMN "wallet_address" text NOT NULL;

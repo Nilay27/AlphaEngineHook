@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useAccount } from 'wagmi';
 import { apiClient } from '@/utils/api-client';
+import { Strategy } from '@/types/alphaengine';
 
 const DashboardContainer = styled.div`
   padding: 24px;
@@ -297,20 +298,19 @@ export default function AlphaGeneratorDashboard() {
       setLoading(true);
       
       // Fetch strategies
-      const strategiesRes = await apiClient.get('/api/strategies', {
+      const strategies = await apiClient.get<Strategy[]>('/api/v1/strategies', {
         params: { alphaGeneratorAddress: address }
       });
-      
+
       // Calculate stats from strategies
-      const strategies = strategiesRes.data || [];
-      const totalSubscribers = strategies.reduce((sum: number, s: any) => 
+      const totalSubscribers = (strategies || []).reduce((sum: number, s: Strategy) => 
         sum + (s.subscriberCount || 0), 0
       );
       
       // TODO: Fetch real activities data from backend
       
       setStats({
-        totalStrategies: strategies.length,
+        totalStrategies: (strategies || []).length,
         activeSubscribers: totalSubscribers,
         totalTrades: 0, // TODO: Calculate from actual trades
         successRate: 0, // TODO: Calculate from actual trades

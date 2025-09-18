@@ -2,8 +2,13 @@ import { NextRequest } from 'next/server'
 import { subscribe } from './bus'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
+  // During build time, return immediately to avoid timeout
+  if (process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build') {
+    return new Response('Build time - stream not available', { status: 503 })
+  }
   let cleanupFn: (() => void) | null = null
   
   const stream = new ReadableStream({

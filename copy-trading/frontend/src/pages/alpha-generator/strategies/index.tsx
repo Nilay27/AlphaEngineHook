@@ -127,7 +127,7 @@ const FilterButton = styled.button<{ $active?: boolean }>`
   
   &:hover {
     border-color: var(--color-primary);
-    color: ${props => props.active ? 'white' : 'var(--color-primary)'};
+    color: ${props => props.$active ? 'white' : 'var(--color-primary)'};
   }
 `;
 
@@ -323,20 +323,20 @@ const AlphaGeneratorStrategiesPage: React.FC = () => {
             All Strategies
           </FilterButton>
           <FilterButton 
-            active={filter === 'active'} 
+            $active={filter === 'active'} 
             onClick={() => setFilter('active')}
           >
             Active
           </FilterButton>
           <FilterButton 
-            active={filter === 'inactive'} 
+            $active={filter === 'inactive'} 
             onClick={() => setFilter('inactive')}
           >
             Inactive
           </FilterButton>
           {address && (
             <FilterButton 
-              active={filter === 'my-strategies'} 
+              $active={filter === 'my-strategies'} 
               onClick={() => setFilter('my-strategies')}
             >
               My Strategies

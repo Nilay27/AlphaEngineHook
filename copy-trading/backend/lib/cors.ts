@@ -13,13 +13,13 @@ const CORS_CONFIG = {
       'http://127.0.0.1:3002',
       'http://127.0.0.1:3003',
       // Add production URLs to development config to allow local-to-prod requests
-      'https://learn-ledger-api.vercel.app',
-      'https://learn-ledger.vercel.app',
-      'https://learnledger.xyz',
-      'https://www.learnledger.xyz',
-      'https://api.learnledger.xyz',
-      'https://www.api.learnledger.xyz',
-      'https://*.learnledger.xyz'
+      'https://alphaengine-api.vercel.app',
+      'https://alphaengine.vercel.app',
+      'https://alphaengine.app',
+      'https://www.alphaengine.app',
+      'https://api.alphaengine.app',
+      'https://www.api.alphaengine.app',
+      'https://*.alphaengine.app'
     ],
     credentials: true
   },
@@ -33,13 +33,13 @@ const CORS_CONFIG = {
       'http://127.0.0.1:3001',
       'http://127.0.0.1:3002',
       'http://127.0.0.1:3003',
-      'https://learn-ledger-api.vercel.app',
-      'https://learn-ledger.vercel.app',
-      'https://learnledger.xyz',
-      'https://www.learnledger.xyz',
-      'https://api.learnledger.xyz',
-      'https://www.api.learnledger.xyz',
-      'https://*.learnledger.xyz'
+      'https://alphaengine-api.vercel.app',
+      'https://alphaengine.vercel.app',
+      'https://alphaengine.app',
+      'https://www.alphaengine.app',
+      'https://api.alphaengine.app',
+      'https://www.api.alphaengine.app',
+      'https://*.alphaengine.app'
     ],
     credentials: true
   }

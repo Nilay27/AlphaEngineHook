@@ -73,7 +73,7 @@ export const registerSubscription = async (
     };
     
     return await withRetry(() =>
-      apiClient.post<Subscription>(`/api/strategies/${strategyId}/subscribe`, data)
+      apiClient.post<Subscription>(`/api/v1/strategies/${strategyId}/subscribe`, data)
     );
   } catch (error) {
     return handleApiError(error);

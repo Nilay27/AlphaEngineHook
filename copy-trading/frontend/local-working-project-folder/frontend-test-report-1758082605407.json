@@ -1,0 +1,100 @@
+[
+  {
+    "url": "http://localhost:3000/",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/login/selectUserType",
+    "redirected": true,
+    "timestamp": "2025-09-17T04:15:57.963Z"
+  },
+  {
+    "url": "http://localhost:3000/login",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/login/selectUserType",
+    "redirected": true,
+    "timestamp": "2025-09-17T04:16:01.383Z"
+  },
+  {
+    "url": "http://localhost:3000/login/selectUserType",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/login/selectUserType",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:04.822Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-generator/dashboard",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-generator/dashboard",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:08.362Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-generator/strategies",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-generator/strategies",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:11.915Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-generator/strategies/create",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-generator/strategies/create",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:15.456Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-generator/performance",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-generator/performance",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:19.130Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-generator/subscribers",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-generator/subscribers",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:22.699Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-generator/strategies/test-strategy-1",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-generator/strategies/test-strategy-1",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:26.574Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-consumer/dashboard",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-consumer/dashboard",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:30.125Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-consumer/strategies",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-consumer/strategies",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:33.684Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-consumer/subscriptions",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-consumer/subscriptions",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:37.246Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-consumer/confirmations",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-consumer/confirmations",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:40.831Z"
+  },
+  {
+    "url": "http://localhost:3000/alpha-consumer/strategies/test-strategy-1",
+    "status": "success",
+    "finalUrl": "http://localhost:3000/alpha-consumer/strategies/test-strategy-1",
+    "redirected": false,
+    "timestamp": "2025-09-17T04:16:44.406Z"
+  }
+]

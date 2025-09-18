@@ -13,7 +13,7 @@ import { Strategy, Subscriber, CreateStrategyInput } from '@/types/alphaengine'
 export const listStrategies = async (): Promise<Strategy[]> => {
   try {
     return await withRetry(() => 
-      apiClient.get<Strategy[]>('/api/strategies')
+      apiClient.get<Strategy[]>('/api/v1/strategies')
     );
   } catch (error) {
     return handleApiError(error);
@@ -26,7 +26,7 @@ export const listStrategies = async (): Promise<Strategy[]> => {
 export const getStrategy = async (id: string): Promise<Strategy> => {
   try {
     return await withRetry(() => 
-      apiClient.get<Strategy>(`/api/strategies/${id}`)
+      apiClient.get<Strategy>(`/api/v1/strategies/${id}`)
     );
   } catch (error) {
     return handleApiError(error);
@@ -39,7 +39,7 @@ export const getStrategy = async (id: string): Promise<Strategy> => {
 export const getSubscribers = async (id: string): Promise<Subscriber[]> => {
   try {
     return await withRetry(() => 
-      apiClient.get<Subscriber[]>(`/api/strategies/${id}/subscribers`)
+      apiClient.get<Subscriber[]>(`/api/v1/strategies/${id}/subscribers`)
     );
   } catch (error) {
     return handleApiError(error);
@@ -53,7 +53,7 @@ export const createStrategy = async (
   strategyData: CreateStrategyInput
 ): Promise<Strategy> => {
   try {
-    return await apiClient.post<Strategy>('/api/strategies', strategyData);
+    return await apiClient.post<Strategy>('/api/v1/strategies', strategyData);
   } catch (error) {
     return handleApiError(error);
   }
@@ -67,7 +67,7 @@ export const updateStrategy = async (
   strategyData: Partial<CreateStrategyInput>
 ): Promise<Strategy> => {
   try {
-    return await apiClient.put<Strategy>(`/api/strategies/${id}`, strategyData);
+    return await apiClient.put<Strategy>(`/api/v1/strategies/${id}`, strategyData);
   } catch (error) {
     return handleApiError(error);
   }
@@ -78,7 +78,7 @@ export const updateStrategy = async (
  */
 export const deleteStrategy = async (id: string): Promise<void> => {
   try {
-    await apiClient.delete(`/api/strategies/${id}`);
+    await apiClient.delete(`/api/v1/strategies/${id}`);
   } catch (error) {
     return handleApiError(error);
   }

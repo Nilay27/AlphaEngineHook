@@ -4,8 +4,6 @@ import { useAccount } from 'wagmi';
 import TradeConfirmationList from '@/Components/AlphaEngine/TradeConfirmationList';
 import { TradeConfirmation } from '@/types/alphaengine';
 import { useConfirmationsSSE } from '@/hooks/useConfirmationsSSE';
-import { writeContract, waitForTransactionReceipt } from '@wagmi/core';
-import { config } from '@/libs/wagmi-config';
 import { confirmationsService } from '@/services/confirmations.service';
 
 const PageContainer = styled.div`

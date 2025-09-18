@@ -6,6 +6,22 @@ const nextConfig = {
     styledComponents: true,
   },
 
+  webpack: (config, { isServer }) => {
+    // Add support for WebAssembly
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+    };
+
+    // Add rule for WebAssembly files
+    config.module.rules.push({
+      test: /\.wasm$/,
+      type: 'webassembly/async',
+    });
+
+    return config;
+  },
+
   images: {
     remotePatterns: [
       {

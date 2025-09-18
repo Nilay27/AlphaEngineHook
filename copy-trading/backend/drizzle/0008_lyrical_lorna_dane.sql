@@ -1,1 +1,0 @@
-ALTER TABLE "project_submissions" ADD COLUMN "is_merged" boolean DEFAULT false NOT NULL;

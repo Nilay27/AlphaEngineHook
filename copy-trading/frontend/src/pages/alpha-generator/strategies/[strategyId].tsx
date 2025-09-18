@@ -225,23 +225,34 @@ const EmptyState = styled.div`
 
 interface Strategy {
   strategyId: string;
-  name: string;
-  description: string;
+  strategyName: string;
+  strategyDescription: string;
   alphaGeneratorAddress: string;
-  performanceFee: number;
   subscriptionFee: string;
   subscriberCount: number;
+  totalVolume: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  supportedProtocols: any;
+  strategyJSON: any;
+}
+
+// Interface for display with computed/default values
+interface StrategyDisplay extends Strategy {
+  name: string;
+  description: string;
+  performanceFee: number;
   totalTrades: number;
   successRate: number;
   status: string;
-  createdAt: string;
 }
 
 export default function StrategyDetailPage() {
   const router = useRouter();
   const { strategyId } = router.query;
   const { address } = useAccount();
-  const [strategy, setStrategy] = useState<Strategy | null>(null);
+  const [strategy, setStrategy] = useState<StrategyDisplay | null>(null);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
   const [showTradeModal, setShowTradeModal] = useState(false);
@@ -256,32 +267,41 @@ export default function StrategyDetailPage() {
   const fetchStrategyDetails = async () => {
     try {
       setLoading(true);
-      
-      // Fetch strategy details
-      const response = await apiClient.get(`/api/strategies/${strategyId}`);
-      const strategyData = response.data;
-      
-      setStrategy(strategyData);
-      
+
+      // Fetch strategy details - apiClient automatically unwraps the response
+      const strategyData = await apiClient.get<Strategy>(`/api/v1/strategies/${strategyId}`);
+
+      // Transform backend data to display format
+      const strategyDisplay: StrategyDisplay = {
+        ...strategyData,
+        name: strategyData.strategyName || 'Untitled Strategy',
+        description: strategyData.strategyDescription || 'No description available',
+        performanceFee: 2.5, // Default performance fee
+        totalTrades: 0, // TODO: Calculate from trades table
+        successRate: 0, // TODO: Calculate from trades table
+        status: strategyData.isActive ? 'active' : 'inactive',
+      };
+
+      setStrategy(strategyDisplay);
+
       // Check if current user is the owner
-      if (address && strategyData.alphaGeneratorAddress) {
-        setIsOwner(
-          strategyData.alphaGeneratorAddress.toLowerCase() === address.toLowerCase()
-        );
-      }
-      
+      const userIsOwner = address && strategyData.alphaGeneratorAddress &&
+        strategyData.alphaGeneratorAddress.toLowerCase() === address.toLowerCase();
+
+      setIsOwner(!!userIsOwner);
+
       // Fetch subscribers if owner
-      if (isOwner) {
+      if (userIsOwner) {
         try {
-          const subscribersRes = await apiClient.get(`/api/strategies/${strategyId}/subscribers`);
-          setSubscribers(subscribersRes.data || []);
+          const subscribersData = await apiClient.get<any[]>(`/api/v1/strategies/${strategyId}/subscribers`);
+          setSubscribers(subscribersData || []);
         } catch (error) {
           console.error('Failed to fetch subscribers:', error);
         }
       }
     } catch (error) {
       console.error('Failed to fetch strategy details:', error);
-      // Strategy not found - will show empty state
+      setStrategy(null);
     } finally {
       setLoading(false);
     }
@@ -382,7 +402,12 @@ export default function StrategyDetailPage() {
             <SectionTitle>Strategy Information</SectionTitle>
             <InfoRow>
               <InfoLabel>Generator</InfoLabel>
-              <InfoValue>{strategy.alphaGeneratorAddress.substring(0, 8)}...</InfoValue>
+              <InfoValue>
+                {strategy.alphaGeneratorAddress
+                  ? `${strategy.alphaGeneratorAddress.substring(0, 8)}...`
+                  : 'N/A'
+                }
+              </InfoValue>
             </InfoRow>
             <InfoRow>
               <InfoLabel>Created</InfoLabel>

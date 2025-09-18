@@ -4,14 +4,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ThemeProvider as NextThemeProvider, useTheme } from 'next-themes';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Provider } from 'mobx-react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import stores from '../Store/stores';
 import Layout from '../Components/Layout';
 import { WagmiProvider } from 'wagmi';
 import { config } from '../libs/wagmi-config';
-import AppModal from '../Components/AppModal/AppModal';
 import { AppTheme, darkTheme, lightTheme } from '../styles/theme';
 
 const queryClient = new QueryClient();
@@ -72,13 +69,10 @@ export default function App({ Component, pageProps }: AppProps) {
       value={{ light: 'light', dark: 'dark' }}>
       <ThemeBridge>
         <Web3Wrapper>
-        <Provider {...stores}>
           <Layout>
             <Component {...pageProps} />
           </Layout>
-          <AppModal />
           <ThemedToastContainer />
-        </Provider>
       </Web3Wrapper>
       </ThemeBridge>
     </NextThemeProvider>

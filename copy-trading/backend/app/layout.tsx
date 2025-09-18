@@ -4,7 +4,6 @@ import type { Metadata } from 'next'
 
 import { NavBar } from '@/components/utilities/nav-bar'
 import { WalletProvider } from '@/components/utilities/wallet-provider'
-import { WebSocketLogger } from '@/components/utilities/web-socket-logger'
 
 export const metadata: Metadata = {
   title: 'AlphaEngine',
@@ -18,7 +17,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <WalletProvider>
           <NavBar />
           <main>{children}</main>
-          {process.env.NODE_ENV !== 'production' && <WebSocketLogger />}
         </WalletProvider>
       </body>
     </html>

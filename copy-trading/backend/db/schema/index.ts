@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * @file index.ts
  *
@@ -10,21 +9,14 @@
  * - Gathers all table exports in one place.
  *
  * @notes
- * - We add the newly created "project-submissions-schema" below.
+ * - AlphaEngine core schemas only (copy-trading platform)
  */
 
-export * from './projects-schema'
 export * from './user-balances-schema'
-export * from './skills-schema'
-export * from './user-skills-schema'
-export * from './courses-schema'
-export * from './enrollments-schema'
-
-// Added newly created project_submissions table:
-export * from './project-submissions-schema'
 export * from './placeholder'
-export * from './freelancer-schema'
-export * from './company-schema'
 export * from './strategies-schema'
 export * from './subscriptions-schema'
 export * from './trade-confirmations-schema'
+export * from './address-mappings-schema'
+export * from './alpha-generators-schema'
+export * from './protocols-schema'

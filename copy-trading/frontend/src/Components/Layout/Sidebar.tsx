@@ -116,7 +116,7 @@ const ProfileSection = styled.div<{ $isCollapsed: boolean }>`
   border-top: 1px solid ${({ theme }) => theme.colors.subtleBorder};
 `;
 
-const CompanyLogo = styled.div`
+const UserLogo = styled.div`
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -131,7 +131,7 @@ const CompanyLogo = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.subtleBorder};
 `;
 
-const CompanyName = styled.div<{ $isCollapsed: boolean }>`
+const UserName = styled.div<{ $isCollapsed: boolean }>`
   font-size: 14px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.sidebarText};
@@ -190,12 +190,12 @@ const Sidebar = () => {
         {
           label: "My Strategies",
           path: "/alpha-generator/strategies",
-          asset: "/asset/Sidebar/projects.svg",
+          asset: "/asset/Sidebar/strategies.svg",
         },
         {
           label: "Performance",
           path: "/alpha-generator/performance",
-          asset: "/asset/Sidebar/submissions.svg",
+          asset: "/asset/Sidebar/performance.svg",
         },
         {
           label: "Subscribers",
@@ -213,12 +213,12 @@ const Sidebar = () => {
         {
           label: "Browse Strategies",
           path: "/alpha-consumer/strategies",
-          asset: "/asset/Sidebar/projects.svg",
+          asset: "/asset/Sidebar/strategies.svg",
         },
         {
           label: "My Subscriptions",
           path: "/alpha-consumer/subscriptions",
-          asset: "/asset/Sidebar/submissions.svg",
+          asset: "/asset/Sidebar/performance.svg",
         },
         {
           label: "Trade Confirmations",
@@ -268,10 +268,10 @@ const Sidebar = () => {
       </NavItemsContainer>
 
       <ProfileSection $isCollapsed={isCollapsed}>
-        <CompanyLogo>{userInitial}</CompanyLogo>
-        <CompanyName $isCollapsed={isCollapsed}>
+        <UserLogo>{userInitial}</UserLogo>
+        <UserName $isCollapsed={isCollapsed}>
           {userName || (isAlphaGeneratorRoute ? "Alpha Generator" : "Alpha Consumer")}
-        </CompanyName>
+        </UserName>
         <ExternalLinkIcon $isCollapsed={isCollapsed} onClick={handleLogout}>
           <LogoutIcon />
         </ExternalLinkIcon>
