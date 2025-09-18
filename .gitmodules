@@ -1,3 +1,9 @@
 [submodule "swap-manager-avs/contracts/lib/fhenix-contracts"]
 	path = swap-manager-avs/contracts/lib/fhenix-contracts
 	url = https://github.com/fhenixprotocol/fhenix-contracts
+[submodule "hello-world-avs/contracts/lib/fhenix-contracts"]
+	path = hello-world-avs/contracts/lib/fhenix-contracts
+	url = https://github.com/fhenixprotocol/fhenix-contracts
+[submodule "copy-trading"]
+	path = copy-trading
+	url = https://github.com/consentsam/copy-trading
