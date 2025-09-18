@@ -6,4 +6,4 @@
 	url = https://github.com/fhenixprotocol/fhenix-contracts
 [submodule "copy-trading"]
 	path = copy-trading
-	url = https://github.com/consentsam/copy-trading
+	url = https://github.com/consentsam/copy-trading.git
