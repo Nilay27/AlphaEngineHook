@@ -1,20 +1,37 @@
-# AlphaEngine Hook - Privacy-Preserving DEX with AVS Integration
+# AlphaEngine Hook - Privacy-Preserving DEX with AVS & Fhenix Integration
 
 **Uniswap Hookathon Demo Repository - September 18th**
 
-A unified repository combining privacy-preserving Uniswap V4 hooks with EigenLayer AVS infrastructure for decentralized FHE decryption.
+A unified repository combining privacy-preserving Uniswap V4 hooks with **EigenLayer AVS** infrastructure and **Fhenix FHE** technology for decentralized encrypted computation.
 
 ## 🎯 Project Overview
 
-AlphaEngine Hook combines two key innovations:
-1. **Universal Privacy Hook**: Enables completely private swaps on Uniswap V4 using Fully Homomorphic Encryption (FHE)
-2. **AVS Infrastructure**: Decentralized operator network for secure FHE decryption and order execution
+AlphaEngine Hook integrates three cutting-edge technologies:
 
-This integration creates a MEV-resistant, privacy-preserving DEX where:
-- Swap amounts remain encrypted until execution
-- Decryption is handled by a decentralized operator network
-- Front-running and sandwich attacks become impossible
-- Privacy is maintained across all operations
+### 🔐 Fhenix Integration
+- **Fully Homomorphic Encryption (FHE)** enables computations on encrypted data
+- Powered by Fhenix's FHE infrastructure for on-chain confidential computation
+- All swap amounts remain encrypted throughout the entire process
+- Zero-knowledge of trade details until execution
+
+### 🌐 EigenLayer AVS Integration
+- **Decentralized operator network** for secure FHE decryption
+- Operators stake ETH through EigenLayer for economic security
+- Slashing mechanism ensures operator reliability
+- Distributed trust model eliminates single points of failure
+
+### 🦄 Uniswap V4 Hook
+- **Universal Privacy Hook** transforms any pool into a confidential DEX
+- Seamless integration with Uniswap V4's hook architecture
+- Single hook serves unlimited token pairs
+- Complete MEV resistance through encryption
+
+## ✨ Key Features
+
+- **🔒 Complete Privacy**: Swap amounts encrypted end-to-end using Fhenix FHE
+- **🛡️ Decentralized Security**: AVS operators provide distributed decryption
+- **⚡ MEV Resistance**: No front-running or sandwich attacks possible
+- **🔄 Universal Support**: Works with any ERC20 token pair
 
 ## 📁 Repository Structure
 
@@ -80,51 +97,142 @@ cd swap-manager-avs
 npm run start:operator
 ```
 
+## 🏗️ Integration Architecture
+
+### How Fhenix & AVS Work Together
+
+```mermaid
+graph TB
+    subgraph "Fhenix FHE Layer"
+        F1[FHE Encryption]
+        F2[Encrypted Computations]
+        F3[FHE Decryption Keys]
+    end
+
+    subgraph "EigenLayer AVS"
+        A1[Operator Network]
+        A2[Stake & Slash]
+        A3[Task Management]
+    end
+
+    subgraph "Uniswap V4"
+        U1[Privacy Hook]
+        U2[Liquidity Pools]
+    end
+
+    User -->|Encrypted Swap| F1
+    F1 --> U1
+    U1 --> A3
+    A3 --> A1
+    A1 --> F3
+    F3 --> F2
+    F2 -->|Execute Swap| U2
+    U2 -->|Encrypted Output| User
+```
+
+The integration leverages:
+- **Fhenix**: Provides FHE primitives for encryption/decryption
+- **AVS Operators**: Distributed network performs decryption securely
+- **Economic Security**: EigenLayer staking ensures operator honesty
+
 ## 🔐 Universal Privacy Hook
 
-The privacy hook transforms any Uniswap V4 pool into a confidential DEX:
+The privacy hook transforms any Uniswap V4 pool into a confidential DEX using Fhenix FHE:
 
 ### Key Features
-- **Complete Privacy**: Swap amounts encrypted end-to-end using FHE
+- **Fhenix-Powered Encryption**: All amounts encrypted using Fhenix FHE libraries
+- **AVS-Secured Decryption**: Decryption handled by staked operators
 - **Universal Support**: Single hook serves unlimited pools
-- **Zero MEV**: No front-running or sandwich attacks possible
-- **Seamless Integration**: Works with any ERC20 token pair
+- **Zero MEV**: Encryption prevents all forms of value extraction
 
 ### How It Works
-1. Users deposit tokens to receive encrypted token representations (eTokens)
-2. Submit encrypted swap intents without revealing amounts
-3. AVS operators decrypt and execute swaps asynchronously
-4. Users receive encrypted output tokens
+1. **Deposit**: Users deposit tokens, receive Fhenix-encrypted representations (eTokens)
+2. **Intent Submission**: Submit encrypted swap intents using Fhenix encryption
+3. **AVS Processing**: EigenLayer operators decrypt via distributed computation
+4. **Execution**: Swaps execute with complete privacy preservation
+5. **Withdrawal**: Users receive encrypted output tokens
 
-### Architecture
+### Privacy Flow with Fhenix & AVS
 ```mermaid
-graph LR
-    A[User] -->|1. Deposit USDC| B[Privacy Hook]
-    B -->|2. Mint eUSDC| C[Encrypted Token]
-    C -->|3. Submit Intent| D[Intent Queue]
-    D -->|4. AVS Decrypt| E[Execute Swap]
-    E -->|5. Receive eUSDT| A
+sequenceDiagram
+    participant User
+    participant Hook as Privacy Hook
+    participant Fhenix as Fhenix FHE
+    participant AVS as AVS Operators
+    participant Pool as Uniswap Pool
+
+    User->>Hook: Deposit USDC
+    Hook->>Fhenix: Encrypt amount
+    Fhenix->>User: Return eUSDC
+    User->>Hook: Submit encrypted intent
+    Hook->>AVS: Request decryption
+    AVS->>Fhenix: Decrypt with distributed keys
+    Fhenix->>AVS: Plain values
+    AVS->>Pool: Execute swap
+    Pool->>Hook: Swap result
+    Hook->>Fhenix: Encrypt output
+    Fhenix->>User: Return eUSDT
 ```
 
 [Full Privacy Hook Documentation →](./universal-privacy-hook/README.md)
 
-## 🌐 AVS Integration
+## 🌐 AVS Integration Details
 
-The EigenLayer AVS provides decentralized FHE decryption:
+The EigenLayer AVS provides the decentralized infrastructure for Fhenix FHE operations:
 
 ### Components
-- **Service Manager**: Coordinates operator tasks and slashing
-- **Operators**: Decrypt FHE intents and execute swaps
-- **Challenger**: Monitors and slashes non-responsive operators
-- **Registry**: Manages operator registration and stake
+- **Service Manager**: Coordinates FHE decryption tasks across operators
+- **Staked Operators**: Decrypt Fhenix-encrypted intents with economic security
+- **Challenger**: Monitors operators, slashes for incorrect decryptions
+- **Registry**: Manages operator registration and ETH stakes
 
-### Operator Flow
-1. Monitor privacy hook for encrypted swap intents
-2. Decrypt intents using FHE keys
-3. Execute swaps on Uniswap V4
-4. Submit execution proofs to avoid slashing
+### Operator Responsibilities
+1. Monitor privacy hook for Fhenix-encrypted swap intents
+2. Participate in distributed FHE decryption protocol
+3. Execute decrypted swaps on Uniswap V4
+4. Submit cryptographic proofs to avoid slashing
+
+### Security Model
+- **Economic Security**: Operators stake ETH via EigenLayer
+- **Distributed Trust**: Multiple operators required for decryption
+- **Slashing Conditions**: Incorrect decryption or non-responsiveness
+- **Cryptographic Proofs**: Zero-knowledge proofs of correct execution
 
 [Full AVS Documentation →](./swap-manager-avs/README.md)
+
+## 🔧 Technical Integration Highlights
+
+### Fhenix FHE Features Used
+- **euint256**: Encrypted unsigned integers for swap amounts
+- **ebool**: Encrypted boolean logic for conditional operations
+- **Homomorphic Operations**: Add, subtract, and compare encrypted values
+- **Threshold Decryption**: Multi-party computation for secure decryption
+- **FHE.sol Library**: Smart contract integration for on-chain FHE
+
+### AVS Infrastructure Components
+- **IServiceManager**: Interface for operator task coordination
+- **IRegistryCoordinator**: Manages operator registration and stakes
+- **IStakeRegistry**: Tracks operator ETH stakes from EigenLayer
+- **BLSSignatureChecker**: Verifies operator signatures for tasks
+- **Slasher**: Enforces penalties for misbehaving operators
+
+### Integration Points
+```solidity
+// Fhenix encryption in Privacy Hook
+euint256 encryptedAmount = FHE.asEuint256(plainAmount);
+
+// AVS operator decryption request
+bytes32 taskHash = serviceManager.createNewTask(
+    encryptedAmount,
+    block.number + TASK_RESPONSE_WINDOW
+);
+
+// Distributed decryption by operators
+uint256 decryptedAmount = operators.performThresholdDecryption(
+    encryptedAmount,
+    operatorSignatures
+);
+```
 
 ## 🧪 Testing
 
@@ -209,10 +317,15 @@ MIT
 
 ## 🙏 Acknowledgments
 
-Built for the Uniswap Hookathon with inspiration from:
-- Uniswap V4 team for hooks architecture
-- Fhenix team for FHE infrastructure  
-- EigenLayer team for AVS framework
+Built for the Uniswap Hookathon with deep integration of:
+- **Uniswap V4**: Revolutionary hooks architecture enabling custom pool logic
+- **Fhenix**: Industry-leading FHE infrastructure powering on-chain encryption
+- **EigenLayer**: AVS framework providing decentralized operator network
+
+### Special Thanks
+- Fhenix team for FHE libraries and encryption primitives
+- EigenLayer team for restaking and operator coordination
+- Uniswap Labs for V4 hooks innovation
 
 ---
 
